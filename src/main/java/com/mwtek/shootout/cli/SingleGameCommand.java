@@ -6,10 +6,7 @@ import java.util.OptionalLong;
 import com.mwtek.shootout.game.ShootoutLimits;
 
 /** Parameters for one shootout and its detailed JSON protocol. */
-public record SingleGameCommand(
-        int numberOfCowboys,
-        OptionalLong randomSeed,
-        Path protocolOutputPath) implements CliCommand {
+public record SingleGameCommand(int numberOfCowboys, OptionalLong randomSeed, Path protocolOutputPath) implements CliCommand {
 
     public SingleGameCommand {
         ShootoutLimits.validateDetailedCowboyCount(numberOfCowboys);

@@ -54,10 +54,8 @@ class ShootoutStateTest {
         shootoutState.applyDamageToCowboy(1, 5);
         shootoutState.eliminateCowboy(1);
 
-        final IllegalArgumentException healthError = assertThrows(
-                IllegalArgumentException.class, () -> shootoutState.getHealthPoints(1));
-        final IllegalArgumentException neighborError = assertThrows(
-                IllegalArgumentException.class,
+        final IllegalArgumentException healthError = assertThrows(IllegalArgumentException.class, () -> shootoutState.getHealthPoints(1));
+        final IllegalArgumentException neighborError = assertThrows(IllegalArgumentException.class,
                 () -> shootoutState.getNeighbor(1, Direction.LEFT));
 
         assertEquals("Cowboy 1 is not alive", healthError.getMessage());

@@ -6,11 +6,7 @@ import java.util.OptionalLong;
 import com.mwtek.shootout.game.ShootoutLimits;
 
 /** Immutable, validated parameters for a repeatable simulation experiment. */
-public record BatchSimulationPlan(
-        int numberOfCowboys,
-        int simulationCount,
-        OptionalLong masterSeed,
-        OptionalInt fixedStarterCowboyId) {
+public record BatchSimulationPlan(int numberOfCowboys, int simulationCount, OptionalLong masterSeed, OptionalInt fixedStarterCowboyId) {
 
     public BatchSimulationPlan {
         ShootoutLimits.validateBatchCowboyCount(numberOfCowboys);
@@ -18,8 +14,7 @@ public record BatchSimulationPlan(
         ShootoutLimits.validateBatchWorkload(numberOfCowboys, simulationCount);
         Objects.requireNonNull(masterSeed, "Master seed container must not be null");
         Objects.requireNonNull(fixedStarterCowboyId, "Starter container must not be null");
-        fixedStarterCowboyId.ifPresent(
-                starterCowboyId -> validateStarterCowboyId(starterCowboyId, numberOfCowboys));
+        fixedStarterCowboyId.ifPresent(starterCowboyId -> validateStarterCowboyId(starterCowboyId, numberOfCowboys));
     }
 
     private static void validateStarterCowboyId(int starterCowboyId, int numberOfCowboys) {

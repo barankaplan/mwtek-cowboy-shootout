@@ -33,15 +33,10 @@ public final class ShootoutGame {
         final int numberOfCowboys = shootoutSetup.numberOfCowboys();
         final ShootoutState shootoutState = new ShootoutState(shootoutSetup);
         final List<ShotEvent> shotHistory = new ArrayList<>();
-        final StatisticsCollector statisticsCollector =
-                new StatisticsCollector(numberOfCowboys);
+        final StatisticsCollector statisticsCollector = new StatisticsCollector(numberOfCowboys);
         runShootout(shootoutState, statisticsCollector, shotHistory);
-        return new ShootoutResult(
-                numberOfCowboys,
-                shootoutSetup.startingCowboyId(),
-                shotHistory,
-                shootoutState.getWinner(),
-                statisticsCollector.snapshot());
+        return new ShootoutResult(numberOfCowboys, shootoutSetup.startingCowboyId(), shotHistory,
+                shootoutState.getWinner(), statisticsCollector.snapshot());
     }
 
     /** Plays a game without retaining detailed shot events; intended for batch analysis. */
@@ -56,51 +51,37 @@ public final class ShootoutGame {
         Objects.requireNonNull(shootoutSetup, "shootoutSetup");
         ShootoutLimits.validateBatchCowboyCount(shootoutSetup.numberOfCowboys());
         final ShootoutState shootoutState = new ShootoutState(shootoutSetup);
-        final StatisticsCollector statisticsCollector =
-                new StatisticsCollector(shootoutSetup.numberOfCowboys());
+        final StatisticsCollector statisticsCollector = new StatisticsCollector(shootoutSetup.numberOfCowboys());
         final int totalShots = runShootout(shootoutState, statisticsCollector, null);
         final Winner winner = shootoutState.getWinner();
-        return new ShootoutSummary(
-                shootoutSetup.numberOfCowboys(),
-                shootoutSetup.startingCowboyId(),
-                totalShots,
-                winner,
-                statisticsCollector.snapshotForCowboy(winner.cowboyId()));
+        return new ShootoutSummary(shootoutSetup.numberOfCowboys(), shootoutSetup.startingCowboyId(), totalShots,
+                winner, statisticsCollector.snapshotForCowboy(winner.cowboyId()));
     }
 
     /** A null history deliberately prevents ShotEvent allocation in batch mode. */
-    private int runShootout(
-            ShootoutState shootoutState, StatisticsCollector statisticsCollector, List<ShotEvent> shotHistoryOrNull) {
+    private int runShootout(ShootoutState shootoutState, StatisticsCollector statisticsCollector, List<ShotEvent> shotHistoryOrNull) {
         int shotNumber = 0;
         while (!shootoutState.isComplete()) {
-            playNextShot(
-                    shootoutState, statisticsCollector, shotHistoryOrNull, ++shotNumber);
+            playNextShot(shootoutState, statisticsCollector, shotHistoryOrNull, ++shotNumber);
         }
         return shotNumber;
     }
 
-    private void playNextShot(
-            ShootoutState shootoutState, StatisticsCollector statisticsCollector,
-            List<ShotEvent> shotHistoryOrNull, int shotNumber) {
+    private void playNextShot(ShootoutState shootoutState, StatisticsCollector statisticsCollector, List<ShotEvent> shotHistoryOrNull, int shotNumber) {
         final int shooterCowboyId = shootoutState.getCurrentCowboyId();
         final int shooterHealthPoints = shootoutState.getHealthPoints(shooterCowboyId);
         final int activeCowboyTurnNumber = shootoutState.getActiveCowboyTurnNumber();
         final Direction direction = determineDirection(shooterHealthPoints);
         final int targetCowboyId = shootoutState.getNeighbor(shooterCowboyId, direction);
         final int damageRolled = damageGenerator.nextDamage();
-        final DamageOutcome damageOutcome =
-                shootoutState.applyDamageToCowboy(targetCowboyId, damageRolled);
+        final DamageOutcome damageOutcome = shootoutState.applyDamageToCowboy(targetCowboyId, damageRolled);
 
         if (damageOutcome.killed()) {
             shootoutState.eliminateCowboy(targetCowboyId);
         } else {
             shootoutState.passTurnToCowboy(targetCowboyId);
         }
-        statisticsCollector.recordShot(
-                shooterCowboyId,
-                targetCowboyId,
-                damageOutcome.effectiveHealthLost(),
-                damageOutcome.killed());
+        statisticsCollector.recordShot(shooterCowboyId, targetCowboyId, damageOutcome.effectiveHealthLost(), damageOutcome.killed());
         if (shotHistoryOrNull == null) {
             return;
         }

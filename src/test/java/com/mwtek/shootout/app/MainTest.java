@@ -24,8 +24,7 @@ class MainTest {
         ByteArrayOutputStream consoleBytes = new ByteArrayOutputStream();
         PrintStream originalStandardOutput = System.out;
 
-        try (PrintStream capturedOutput = new PrintStream(
-                consoleBytes, true, StandardCharsets.UTF_8)) {
+        try (PrintStream capturedOutput = new PrintStream(consoleBytes, true, StandardCharsets.UTF_8)) {
             System.setOut(capturedOutput);
             Main.main(new String[]{"3", "--output", firstProtocol.toString()});
 
@@ -52,8 +51,7 @@ class MainTest {
         final CliCommand compactCommand = Main.createInteractiveCommand(500_111);
 
         assertTrue(detailedCommand instanceof SingleGameCommand);
-        final BatchSimulationCommand batchCommand =
-                (BatchSimulationCommand) compactCommand;
+        final BatchSimulationCommand batchCommand = (BatchSimulationCommand) compactCommand;
         assertEquals(500_111, batchCommand.simulationPlan().numberOfCowboys());
         assertEquals(10, batchCommand.simulationPlan().simulationCount());
         assertTrue(batchCommand.summaryOutputPath().toString().endsWith(".csv"));

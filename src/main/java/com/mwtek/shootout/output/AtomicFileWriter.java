@@ -34,11 +34,7 @@ public final class AtomicFileWriter {
 
     private static void moveIntoPlace(Path temporaryFile, Path destination) throws IOException {
         try {
-            Files.move(
-                    temporaryFile,
-                    destination,
-                    StandardCopyOption.ATOMIC_MOVE,
-                    StandardCopyOption.REPLACE_EXISTING);
+            Files.move(temporaryFile, destination, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
         } catch (AtomicMoveNotSupportedException unsupportedAtomicMove) {
             Files.move(temporaryFile, destination, StandardCopyOption.REPLACE_EXISTING);
         }
@@ -54,8 +50,8 @@ public final class AtomicFileWriter {
 
         static TemporaryOutputFile createIn(Path outputDirectory, Path destinationFileName)
                 throws IOException {
-            final Path path = Files.createTempFile(
-                    outputDirectory, "." + destinationFileName + ".", ".tmp");
+            final String temporaryFilePrefix = "." + destinationFileName + ".";
+            final Path path = Files.createTempFile(outputDirectory, temporaryFilePrefix, ".tmp");
             return new TemporaryOutputFile(path);
         }
 

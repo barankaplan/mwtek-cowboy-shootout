@@ -23,17 +23,12 @@ public final class ProtocolWriter {
     public void write(ShootoutResult shootoutResult, long randomSeed, Path protocolOutputPath) throws IOException {
         Objects.requireNonNull(shootoutResult, "shootoutResult");
         Objects.requireNonNull(protocolOutputPath, "protocolOutputPath");
-        final ShootoutProtocol protocol =
-                ShootoutProtocol.fromShootoutResult(shootoutResult, randomSeed);
-        AtomicFileWriter.write(
-                protocolOutputPath,
-                temporaryFile -> writeUtf8Json(temporaryFile, protocol));
+        final ShootoutProtocol protocol = ShootoutProtocol.fromShootoutResult(shootoutResult, randomSeed);
+        AtomicFileWriter.write(protocolOutputPath, temporaryFile -> writeUtf8Json(temporaryFile, protocol));
     }
 
-    private static void writeUtf8Json(Path temporaryFile, ShootoutProtocol protocol)
-            throws IOException {
-        try (BufferedWriter jsonWriter =
-                Files.newBufferedWriter(temporaryFile, StandardCharsets.UTF_8)) {
+    private static void writeUtf8Json(Path temporaryFile, ShootoutProtocol protocol) throws IOException {
+        try (BufferedWriter jsonWriter = Files.newBufferedWriter(temporaryFile, StandardCharsets.UTF_8)) {
             MAPPER.writeValue(jsonWriter, protocol);
         }
     }

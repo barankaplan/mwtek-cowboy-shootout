@@ -69,5 +69,4 @@ record SimulationSummaryRow(
                 .map(String::valueOf)
                 .collect(Collectors.joining(","));
     }
-
 }

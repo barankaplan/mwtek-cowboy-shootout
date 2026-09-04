@@ -24,9 +24,7 @@ public final class BatchSimulationWriter {
                 : new Random();
     }
 
-    private static void writeSimulationSummary(
-            BatchSimulationPlan simulationPlan, Path summaryOutputPath, Random gameSeedGenerator)
-            throws IOException {
+    private static void writeSimulationSummary(BatchSimulationPlan simulationPlan, Path summaryOutputPath, Random gameSeedGenerator) throws IOException {
         try (BufferedWriter summaryWriter = Files.newBufferedWriter(summaryOutputPath, StandardCharsets.UTF_8)) {
             writeHeader(summaryWriter);
             writeSimulationRows(summaryWriter, simulationPlan, gameSeedGenerator);
@@ -38,34 +36,27 @@ public final class BatchSimulationWriter {
         summaryWriter.newLine();
     }
 
-    private static void writeSimulationRows(
-            BufferedWriter summaryWriter, BatchSimulationPlan simulationPlan, Random gameSeedGenerator)
-            throws IOException {
+    private static void writeSimulationRows(BufferedWriter summaryWriter, BatchSimulationPlan simulationPlan, Random gameSeedGenerator) throws IOException {
         for (int simulationIndex = 0;
                 simulationIndex < simulationPlan.simulationCount();
                 simulationIndex++) {
             final int simulationId = simulationIndex + 1;
             final long gameSeed = gameSeedGenerator.nextLong();
-            final SimulationSummaryRow summaryRow =
-                    runSimulation(simulationId, gameSeed, simulationPlan);
+            final SimulationSummaryRow summaryRow = runSimulation(simulationId, gameSeed, simulationPlan);
             summaryWriter.write(summaryRow.toCsvRow());
             summaryWriter.newLine();
         }
     }
 
-    private static SimulationSummaryRow runSimulation(
-            int simulationId, long gameSeed, BatchSimulationPlan simulationPlan) {
+    private static SimulationSummaryRow runSimulation(int simulationId, long gameSeed, BatchSimulationPlan simulationPlan) {
         final ShootoutGame shootoutGame = new ShootoutGame(new JavaRandomSource(gameSeed));
-        final ShootoutSummary shootoutSummary =
-                summarizeShootout(shootoutGame, simulationPlan);
+        final ShootoutSummary shootoutSummary = summarizeShootout(shootoutGame, simulationPlan);
         return SimulationSummaryRow.from(simulationId, gameSeed, shootoutSummary);
     }
 
     private static ShootoutSummary summarizeShootout(ShootoutGame shootoutGame, BatchSimulationPlan simulationPlan) {
         return simulationPlan.fixedStarterCowboyId().isPresent()
-                ? shootoutGame.summarize(new ShootoutSetup(
-                        simulationPlan.numberOfCowboys(),
-                        simulationPlan.fixedStarterCowboyId().getAsInt()))
+                ? shootoutGame.summarize(new ShootoutSetup(simulationPlan.numberOfCowboys(), simulationPlan.fixedStarterCowboyId().getAsInt()))
                 : shootoutGame.summarize(simulationPlan.numberOfCowboys());
     }
 
@@ -73,9 +64,6 @@ public final class BatchSimulationWriter {
         Objects.requireNonNull(simulationPlan, "simulationPlan");
         Objects.requireNonNull(summaryOutputPath, "summaryOutputPath");
         final Random gameSeedGenerator = createGameSeedGenerator(simulationPlan);
-        AtomicFileWriter.write(
-                summaryOutputPath,
-                temporaryFile -> writeSimulationSummary(
-                        simulationPlan, temporaryFile, gameSeedGenerator));
+        AtomicFileWriter.write(summaryOutputPath, temporaryFile -> writeSimulationSummary(simulationPlan, temporaryFile, gameSeedGenerator));
     }
 }

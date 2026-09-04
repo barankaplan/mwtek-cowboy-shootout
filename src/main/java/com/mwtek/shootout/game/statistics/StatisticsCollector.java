@@ -18,11 +18,7 @@ public final class StatisticsCollector {
         damageTakenByCowboy = new int[numberOfCowboys];
     }
 
-    public void recordShot(
-            int shooterCowboyId,
-            int targetCowboyId,
-            int effectiveHealthLost,
-            boolean killed) {
+    public void recordShot(int shooterCowboyId, int targetCowboyId, int effectiveHealthLost, boolean killed) {
         shotsFiredByCowboy[shooterCowboyId]++;
         damageDealtByCowboy[shooterCowboyId] += effectiveHealthLost;
         hitsTakenByCowboy[targetCowboyId]++;
@@ -34,13 +30,8 @@ public final class StatisticsCollector {
 
     public GameStatistics snapshot() {
         return new GameStatistics(IntStream.range(0, shotsFiredByCowboy.length)
-                .mapToObj(cowboyId -> new CowboyStatistics(
-                        cowboyId,
-                        shotsFiredByCowboy[cowboyId],
-                        killsByCowboy[cowboyId],
-                        damageDealtByCowboy[cowboyId],
-                        hitsTakenByCowboy[cowboyId],
-                        damageTakenByCowboy[cowboyId]))
+                .mapToObj(cowboyId -> new CowboyStatistics(cowboyId, shotsFiredByCowboy[cowboyId], killsByCowboy[cowboyId],
+                        damageDealtByCowboy[cowboyId], hitsTakenByCowboy[cowboyId], damageTakenByCowboy[cowboyId]))
                 .toList());
     }
 
@@ -48,9 +39,6 @@ public final class StatisticsCollector {
         if (cowboyId < 0 || cowboyId >= shotsFiredByCowboy.length) {
             throw new IllegalArgumentException("Cowboy ID is outside the statistics collection");
         }
-        return new WinnerStatistics(
-                shotsFiredByCowboy[cowboyId],
-                killsByCowboy[cowboyId],
-                damageDealtByCowboy[cowboyId]);
+        return new WinnerStatistics(shotsFiredByCowboy[cowboyId], killsByCowboy[cowboyId], damageDealtByCowboy[cowboyId]);
     }
 }

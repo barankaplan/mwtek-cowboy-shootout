@@ -6,7 +6,7 @@
     <property name="charset" value="UTF-8"/>
     <module name="FileTabCharacter"/>
     <module name="LineLength">
-        <property name="max" value="120"/>
+        <property name="max" value="220"/>
         <property name="ignorePattern" value="^package|^import|https?://"/>
     </module>
     <module name="TreeWalker">

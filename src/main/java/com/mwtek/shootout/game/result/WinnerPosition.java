@@ -14,10 +14,8 @@ public record WinnerPosition(int offsetFromStarter, int numberOfCowboys) {
         }
     }
 
-    public static WinnerPosition calculate(
-            int numberOfCowboys, int startingCowboyId, int winnerCowboyId) {
-        final int offsetFromStarter = Math.floorMod(
-                winnerCowboyId - startingCowboyId, numberOfCowboys);
+    public static WinnerPosition calculate(int numberOfCowboys, int startingCowboyId, int winnerCowboyId) {
+        final int offsetFromStarter = Math.floorMod(winnerCowboyId - startingCowboyId, numberOfCowboys);
         return new WinnerPosition(offsetFromStarter, numberOfCowboys);
     }
 

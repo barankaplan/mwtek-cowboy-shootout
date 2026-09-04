@@ -10,11 +10,7 @@ final class Cowboy {
     private int leftNeighborCowboyId;
     private boolean alive = true;
 
-    Cowboy(
-            int cowboyId,
-            int initialHealthPoints,
-            int rightNeighborCowboyId,
-            int leftNeighborCowboyId) {
+    Cowboy(int cowboyId, int initialHealthPoints, int rightNeighborCowboyId, int leftNeighborCowboyId) {
         this.cowboyId = cowboyId;
         this.healthPoints = initialHealthPoints;
         this.rightNeighborCowboyId = rightNeighborCowboyId;
@@ -46,13 +42,8 @@ final class Cowboy {
         final int effectiveHealthLost = healthPointsBefore - healthPointsAfter;
         healthPoints = healthPointsAfter;
 
-        return new DamageOutcome(
-                healthPointsBefore,
-                damageRolled,
-                effectiveHealthLost,
-                healthPointsAfter,
-                damageRolled - effectiveHealthLost,
-                healthPointsAfter == 0);
+        return new DamageOutcome(healthPointsBefore, damageRolled, effectiveHealthLost, healthPointsAfter,
+                damageRolled - effectiveHealthLost, healthPointsAfter == 0);
     }
 
     void changeRightNeighborTo(int cowboyId) {

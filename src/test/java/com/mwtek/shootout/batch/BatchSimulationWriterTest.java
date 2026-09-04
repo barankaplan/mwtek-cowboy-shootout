@@ -16,8 +16,7 @@ class BatchSimulationWriterTest {
     @Test
     void writesOneDeterministicSummaryRowPerGame() throws Exception {
         Path summaryFile = temporaryDirectory.resolve("summary.csv");
-        BatchSimulationPlan plan = new BatchSimulationPlan(
-                4, 12, OptionalLong.of(77L), OptionalInt.of(0));
+        BatchSimulationPlan plan = new BatchSimulationPlan(4, 12, OptionalLong.of(77L), OptionalInt.of(0));
         new BatchSimulationWriter().write(plan, summaryFile);
         List<String> summaryRows = Files.readAllLines(summaryFile);
         assertEquals(13, summaryRows.size());

@@ -11,8 +11,7 @@ import com.mwtek.shootout.batch.BatchSimulationPlan;
 
 /** Parses command-line arguments into typed application configuration. */
 public final class CliParser {
-    private static final Path DEFAULT_PROTOCOL_PATH =
-            Path.of("shootout-protocols", "cowboy-shootout-protocol.json");
+    private static final Path DEFAULT_PROTOCOL_PATH = Path.of("shootout-protocols", "cowboy-shootout-protocol.json");
     private static final Path DEFAULT_SUMMARY_PATH = Path.of("analysis/output/simulation-summary.csv");
 
     private CliParser() {
@@ -25,8 +24,7 @@ public final class CliParser {
         }
         final int numberOfCowboys = parsePositiveInt(commandLineArguments[0], "Cowboy count");
         final Map<CliOption, String> optionValues = collectOptionValues(commandLineArguments);
-        final OptionalLong randomSeed = parseOptionalLong(
-                optionValues.get(CliOption.SEED), "Seed");
+        final OptionalLong randomSeed = parseOptionalLong(optionValues.get(CliOption.SEED), "Seed");
 
         if (optionValues.containsKey(CliOption.BATCH)) {
             return createBatchSimulationCommand(numberOfCowboys, randomSeed, optionValues);
@@ -42,8 +40,7 @@ public final class CliParser {
             if (valueIndex >= commandLineArguments.length) {
                 throw new IllegalArgumentException("Option requires a value: " + option.token());
             }
-            final String previousValue = optionValues.putIfAbsent(
-                    option, commandLineArguments[valueIndex]);
+            final String previousValue = optionValues.putIfAbsent(option, commandLineArguments[valueIndex]);
             if (previousValue != null) {
                 throw new IllegalArgumentException("Option may only be specified once: " + option.token());
             }
@@ -51,28 +48,21 @@ public final class CliParser {
         return optionValues;
     }
 
-    private static SingleGameCommand createSingleGameCommand(
-            int numberOfCowboys, OptionalLong randomSeed, Map<CliOption, String> optionValues) {
+    private static SingleGameCommand createSingleGameCommand(int numberOfCowboys, OptionalLong randomSeed, Map<CliOption, String> optionValues) {
         rejectOptionOutsideBatchMode(optionValues, CliOption.STARTER);
         rejectOptionOutsideBatchMode(optionValues, CliOption.SUMMARY);
-        final Path protocolOutputPath = pathOrDefault(
-                optionValues, CliOption.OUTPUT, DEFAULT_PROTOCOL_PATH);
+        final Path protocolOutputPath = pathOrDefault(optionValues, CliOption.OUTPUT, DEFAULT_PROTOCOL_PATH);
         return new SingleGameCommand(numberOfCowboys, randomSeed, protocolOutputPath);
     }
 
-    private static BatchSimulationCommand createBatchSimulationCommand(
-            int numberOfCowboys, OptionalLong randomSeed, Map<CliOption, String> optionValues) {
+    private static BatchSimulationCommand createBatchSimulationCommand(int numberOfCowboys, OptionalLong randomSeed, Map<CliOption, String> optionValues) {
         if (optionValues.containsKey(CliOption.OUTPUT)) {
             throw new IllegalArgumentException("--output cannot be used with --batch; use --summary");
         }
-        final int simulationCount = parsePositiveInt(
-                optionValues.get(CliOption.BATCH), "Batch size");
-        final OptionalInt fixedStarter = parseOptionalInt(
-                optionValues.get(CliOption.STARTER), "Starter");
-        final Path summaryOutputPath = pathOrDefault(
-                optionValues, CliOption.SUMMARY, DEFAULT_SUMMARY_PATH);
-        final BatchSimulationPlan plan = new BatchSimulationPlan(
-                numberOfCowboys, simulationCount, randomSeed, fixedStarter);
+        final int simulationCount = parsePositiveInt(optionValues.get(CliOption.BATCH), "Batch size");
+        final OptionalInt fixedStarter = parseOptionalInt(optionValues.get(CliOption.STARTER), "Starter");
+        final Path summaryOutputPath = pathOrDefault(optionValues, CliOption.SUMMARY, DEFAULT_SUMMARY_PATH);
+        final BatchSimulationPlan plan = new BatchSimulationPlan(numberOfCowboys, simulationCount, randomSeed, fixedStarter);
         return new BatchSimulationCommand(plan, summaryOutputPath);
     }
 
@@ -106,8 +96,7 @@ public final class CliParser {
         try {
             return Integer.parseInt(value);
         } catch (NumberFormatException invalidNumberException) {
-            throw new IllegalArgumentException(
-                    label + " must be an integer", invalidNumberException);
+            throw new IllegalArgumentException(label + " must be an integer", invalidNumberException);
         }
     }
 
@@ -115,8 +104,7 @@ public final class CliParser {
         try {
             return Long.parseLong(value);
         } catch (NumberFormatException invalidNumberException) {
-            throw new IllegalArgumentException(
-                    label + " must be a long integer", invalidNumberException);
+            throw new IllegalArgumentException(label + " must be a long integer", invalidNumberException);
         }
     }
 }

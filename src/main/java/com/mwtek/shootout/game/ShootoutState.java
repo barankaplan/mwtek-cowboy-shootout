@@ -101,11 +101,9 @@ final class ShootoutState {
         for (int cowboyId = 0; cowboyId < numberOfCowboys; cowboyId++) {
             final int rightNeighborCowboyId = Math.floorMod(cowboyId - 1, numberOfCowboys);
             final int leftNeighborCowboyId = (cowboyId + 1) % numberOfCowboys;
-            cowboys[cowboyId] = new Cowboy(
-                    cowboyId,
-                    GameRules.INITIAL_HEALTH_POINTS,
-                    rightNeighborCowboyId,
-                    leftNeighborCowboyId);
+            final int initialHealthPoints = GameRules.INITIAL_HEALTH_POINTS;
+            cowboys[cowboyId] =
+                    new Cowboy(cowboyId, initialHealthPoints, rightNeighborCowboyId, leftNeighborCowboyId);
         }
     }
 

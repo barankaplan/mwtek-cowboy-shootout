@@ -32,17 +32,11 @@ class ShootoutGameTest {
             throw new AssertionError("Random source must not run before validation");
         };
 
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> new ShootoutGame(randomSourceThatMustNotBeCalled).play(0));
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> new ShootoutGame(randomSourceThatMustNotBeCalled)
-                        .play(ShootoutLimits.MAX_DETAILED_COWBOYS + 1));
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> new ShootoutGame(randomSourceThatMustNotBeCalled)
-                        .summarize(ShootoutLimits.MAX_BATCH_COWBOYS + 1));
+        assertThrows(IllegalArgumentException.class, () -> new ShootoutGame(randomSourceThatMustNotBeCalled).play(0));
+        assertThrows(IllegalArgumentException.class,
+                () -> new ShootoutGame(randomSourceThatMustNotBeCalled).play(ShootoutLimits.MAX_DETAILED_COWBOYS + 1));
+        assertThrows(IllegalArgumentException.class,
+                () -> new ShootoutGame(randomSourceThatMustNotBeCalled).summarize(ShootoutLimits.MAX_BATCH_COWBOYS + 1));
     }
 
     @Test
@@ -79,9 +73,7 @@ class ShootoutGameTest {
         if (firstKillIndex + 1 < shootoutResult.shots().size()) {
             ShotEvent shotAfterKill = shootoutResult.shots().get(firstKillIndex + 1);
             assertEquals(1, shotAfterKill.shooterCowboyId());
-            assertEquals(
-                    killingShot.activeCowboyTurnNumber(),
-                    shotAfterKill.activeCowboyTurnNumber());
+            assertEquals(killingShot.activeCowboyTurnNumber(), shotAfterKill.activeCowboyTurnNumber());
         }
         assertTrue(shootoutResult.shots().stream()
                 .noneMatch(shot -> shot.shooterCowboyId() == shot.targetCowboyId()));
@@ -97,12 +89,8 @@ class ShootoutGameTest {
                 .findFirst()
                 .orElseThrow();
         assertEquals(0, overkillShot.targetHealthPointsAfter());
-        assertEquals(
-                overkillShot.targetHealthPointsBefore(),
-                overkillShot.effectiveHealthPointsLost());
-        assertEquals(
-                overkillShot.damageRolled() - overkillShot.effectiveHealthPointsLost(),
-                overkillShot.overkill());
+        assertEquals(overkillShot.targetHealthPointsBefore(), overkillShot.effectiveHealthPointsLost());
+        assertEquals(overkillShot.damageRolled() - overkillShot.effectiveHealthPointsLost(), overkillShot.overkill());
     }
 
     @Test
@@ -145,9 +133,7 @@ class ShootoutGameTest {
         ShootoutResult shootoutResult = new ShootoutGame(new JavaRandomSource(2026L)).play(5);
         GameStatistics statistics = shootoutResult.statistics();
         assertEquals(5, statistics.cowboys().size());
-        assertEquals(
-                shootoutResult.shots().size(),
-                statistics.cowboys().stream().mapToInt(CowboyStatistics::shotsFired).sum());
+        assertEquals(shootoutResult.shots().size(), statistics.cowboys().stream().mapToInt(CowboyStatistics::shotsFired).sum());
         assertEquals(4, statistics.cowboys().stream().mapToInt(CowboyStatistics::kills).sum());
         assertEquals(
                 shootoutResult.shots().stream()
@@ -172,12 +158,8 @@ class ShootoutGameTest {
         assertEquals(detailedResult.winner(), compactSummary.winner());
         CowboyStatistics detailedWinnerStatistics = detailedResult.statistics().cowboys()
                 .get(detailedResult.winner().cowboyId());
-        assertEquals(
-                new WinnerStatistics(
-                        detailedWinnerStatistics.shotsFired(),
-                        detailedWinnerStatistics.kills(),
-                        detailedWinnerStatistics.totalDamageDealt()),
-                compactSummary.winnerStatistics());
+        assertEquals(new WinnerStatistics(detailedWinnerStatistics.shotsFired(), detailedWinnerStatistics.kills(),
+                detailedWinnerStatistics.totalDamageDealt()), compactSummary.winnerStatistics());
     }
 
     private static final class PredeterminedRandomSource implements RandomSource {
