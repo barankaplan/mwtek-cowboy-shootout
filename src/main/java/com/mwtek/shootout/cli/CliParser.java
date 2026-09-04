@@ -89,7 +89,7 @@ public final class CliParser {
     }
 
     private static OptionalLong parseOptionalSeed(String value) {
-        return value == null ? OptionalLong.empty() : OptionalLong.of(parseLong(value, "Seed"));
+        return value == null ? OptionalLong.empty() : OptionalLong.of(parseSeed(value));
     }
 
     private static int parseInt(String value, String label) {
@@ -100,11 +100,11 @@ public final class CliParser {
         }
     }
 
-    private static long parseLong(String value, String label) {
+    private static long parseSeed(String value) {
         try {
             return Long.parseLong(value);
         } catch (NumberFormatException invalidNumberException) {
-            throw new IllegalArgumentException(label + " must be a long integer", invalidNumberException);
+            throw new IllegalArgumentException("Seed must be a long integer", invalidNumberException);
         }
     }
 }
