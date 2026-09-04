@@ -55,9 +55,11 @@ public final class BatchSimulationWriter {
     }
 
     private static ShootoutSummary summarizeShootout(ShootoutGame shootoutGame, BatchSimulationPlan simulationPlan) {
-        return simulationPlan.fixedStarterCowboyId().isPresent()
-                ? shootoutGame.summarize(new ShootoutSetup(simulationPlan.numberOfCowboys(), simulationPlan.fixedStarterCowboyId().getAsInt()))
-                : shootoutGame.summarize(simulationPlan.numberOfCowboys());
+        if (simulationPlan.fixedStarterCowboyId().isPresent()) {
+            final ShootoutSetup fixedStarterSetup = new ShootoutSetup(simulationPlan.numberOfCowboys(), simulationPlan.fixedStarterCowboyId().getAsInt());
+            return shootoutGame.summarize(fixedStarterSetup);
+        }
+        return shootoutGame.summarize(simulationPlan.numberOfCowboys());
     }
 
     public void write(BatchSimulationPlan simulationPlan, Path summaryOutputPath) throws IOException {
