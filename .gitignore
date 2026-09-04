@@ -1,0 +1,7 @@
+.DS_Store
+.idea/
+.venv/
+target/
+*.iml
+shootout-protocol*.json
+shootout-protocols/
