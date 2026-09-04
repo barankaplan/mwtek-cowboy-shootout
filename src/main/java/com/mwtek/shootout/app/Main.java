@@ -25,6 +25,7 @@ import java.util.OptionalInt;
 import java.util.OptionalLong;
 import java.util.concurrent.ThreadLocalRandom;
 
+@SuppressWarnings("java:S106") // The assignment explicitly requires status and error messages in the console.
 public final class Main {
     private static final String ARGUMENT_ERROR_FORMAT = "Error: %s%n";
     private static final String CORRECT_ARGUMENTS_MESSAGE = "The command was not run. Correct the arguments and run it again.%n";

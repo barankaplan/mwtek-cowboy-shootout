@@ -45,17 +45,18 @@ class CliParserTest {
 
     @Test
     void rejectsInvalidCountsAndIncompatibleOptions() {
+        final String[] tooManyDetailedCowboys = {String.valueOf(ShootoutLimits.MAX_DETAILED_COWBOYS + 1)};
+        final String[] tooManyBatchSimulations = {"5", "--batch", String.valueOf(ShootoutLimits.MAX_BATCH_SIMULATIONS + 1)};
+        final String[] excessiveBatchWorkload = {String.valueOf(ShootoutLimits.MAX_BATCH_COWBOYS), "--batch", "101"};
+
         assertThrows(IllegalArgumentException.class, () -> CliParser.parse(new String[]{"0"}));
         assertThrows(IllegalArgumentException.class, () -> CliParser.parse(new String[]{"five"}));
         assertThrows(IllegalArgumentException.class, () -> CliParser.parse(new String[]{"5", "--starter", "0"}));
         assertThrows(IllegalArgumentException.class, () -> CliParser.parse(new String[]{"5", "--batch", "5", "--output", "game.json"}));
         assertThrows(IllegalArgumentException.class, () -> CliParser.parse(new String[]{"5", "--batch", "5", "--starter", "5"}));
         assertThrows(IllegalArgumentException.class, () -> CliParser.parse(new String[]{"5", "--seed", "1", "--seed", "2"}));
-        assertThrows(IllegalArgumentException.class,
-                () -> CliParser.parse(new String[]{String.valueOf(ShootoutLimits.MAX_DETAILED_COWBOYS + 1)}));
-        assertThrows(IllegalArgumentException.class, () -> CliParser.parse(
-                new String[]{"5", "--batch", String.valueOf(ShootoutLimits.MAX_BATCH_SIMULATIONS + 1)}));
-        assertThrows(IllegalArgumentException.class, () -> CliParser.parse(
-                new String[]{String.valueOf(ShootoutLimits.MAX_BATCH_COWBOYS), "--batch", "101"}));
+        assertThrows(IllegalArgumentException.class, () -> CliParser.parse(tooManyDetailedCowboys));
+        assertThrows(IllegalArgumentException.class, () -> CliParser.parse(tooManyBatchSimulations));
+        assertThrows(IllegalArgumentException.class, () -> CliParser.parse(excessiveBatchWorkload));
     }
 }

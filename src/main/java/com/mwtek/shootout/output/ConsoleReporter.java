@@ -8,6 +8,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 /** Displays a detailed shootout in the terminal. */
+@SuppressWarnings("java:S106") // Direct console output is this class's only responsibility.
 public final class ConsoleReporter {
     private static final String SHOOTOUT_STARTED_FORMAT = "Shootout started with %d %s%nStarting cowboy: %d%n";
     private static final String SHOT_FORMAT = "#%d Cowboy %d shoots %s at Cowboy %d; damage=%d, target HP=%d%s%n";

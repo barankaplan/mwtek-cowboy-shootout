@@ -16,6 +16,7 @@ import com.mwtek.shootout.game.statistics.GameStatistics;
 import com.mwtek.shootout.game.statistics.WinnerStatistics;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class ShootoutGameTest {
@@ -31,12 +32,11 @@ class ShootoutGameTest {
         RandomSource randomSourceThatMustNotBeCalled = ignored -> {
             throw new AssertionError("Random source must not run before validation");
         };
+        final ShootoutGame shootoutGame = new ShootoutGame(randomSourceThatMustNotBeCalled);
 
-        assertThrows(IllegalArgumentException.class, () -> new ShootoutGame(randomSourceThatMustNotBeCalled).play(0));
-        assertThrows(IllegalArgumentException.class,
-                () -> new ShootoutGame(randomSourceThatMustNotBeCalled).play(ShootoutLimits.MAX_DETAILED_COWBOYS + 1));
-        assertThrows(IllegalArgumentException.class,
-                () -> new ShootoutGame(randomSourceThatMustNotBeCalled).summarize(ShootoutLimits.MAX_BATCH_COWBOYS + 1));
+        assertThrows(IllegalArgumentException.class, () -> shootoutGame.play(0));
+        assertThrows(IllegalArgumentException.class, () -> shootoutGame.play(ShootoutLimits.MAX_DETAILED_COWBOYS + 1));
+        assertThrows(IllegalArgumentException.class, () -> shootoutGame.summarize(ShootoutLimits.MAX_BATCH_COWBOYS + 1));
     }
 
     @Test
@@ -97,8 +97,9 @@ class ShootoutGameTest {
     void sameSeedProducesSameImmutableProtocol() {
         ShootoutResult firstRun = new ShootoutGame(new JavaRandomSource(123456L)).play(8);
         ShootoutResult secondRun = new ShootoutGame(new JavaRandomSource(123456L)).play(8);
+        final List<ShotEvent> immutableShotHistory = firstRun.shots();
         assertEquals(firstRun, secondRun);
-        assertThrows(UnsupportedOperationException.class, () -> firstRun.shots().add(null));
+        assertThrows(UnsupportedOperationException.class, () -> immutableShotHistory.add(null));
     }
 
     @Test

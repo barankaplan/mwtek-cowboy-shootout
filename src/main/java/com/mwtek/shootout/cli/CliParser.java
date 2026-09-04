@@ -32,9 +32,9 @@ public final class CliParser {
 
     private static Map<CliOption, String> collectOptionValues(String[] commandLineArguments) {
         final Map<CliOption, String> optionValues = new EnumMap<>(CliOption.class);
-        for (int argumentIndex = 1; argumentIndex < commandLineArguments.length; argumentIndex++) {
+        for (int argumentIndex = 1; argumentIndex < commandLineArguments.length; argumentIndex += 2) {
             final CliOption option = CliOption.fromToken(commandLineArguments[argumentIndex]);
-            final int valueIndex = ++argumentIndex;
+            final int valueIndex = argumentIndex + 1;
             if (valueIndex >= commandLineArguments.length) {
                 throw new IllegalArgumentException("Option requires a value: " + option.token());
             }
