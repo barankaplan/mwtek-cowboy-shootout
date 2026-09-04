@@ -6,6 +6,7 @@ import com.mwtek.shootout.cli.BatchSimulationCommand;
 import com.mwtek.shootout.cli.CliCommand;
 import com.mwtek.shootout.cli.SingleGameCommand;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -50,7 +51,7 @@ class MainTest {
         final CliCommand detailedCommand = Main.createInteractiveCommand(10_000);
         final CliCommand compactCommand = Main.createInteractiveCommand(500_111);
 
-        assertTrue(detailedCommand instanceof SingleGameCommand);
+        assertInstanceOf(SingleGameCommand.class, detailedCommand);
         final BatchSimulationCommand batchCommand = (BatchSimulationCommand) compactCommand;
         assertEquals(500_111, batchCommand.simulationPlan().numberOfCowboys());
         assertEquals(10, batchCommand.simulationPlan().simulationCount());

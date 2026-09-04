@@ -24,12 +24,10 @@ public final class CliParser {
         }
         final int numberOfCowboys = parsePositiveInt(commandLineArguments[0], "Cowboy count");
         final Map<CliOption, String> optionValues = collectOptionValues(commandLineArguments);
-        final OptionalLong randomSeed = parseOptionalLong(optionValues.get(CliOption.SEED), "Seed");
-
         if (optionValues.containsKey(CliOption.BATCH)) {
-            return createBatchSimulationCommand(numberOfCowboys, randomSeed, optionValues);
+            return createBatchSimulationCommand(numberOfCowboys, optionValues);
         }
-        return createSingleGameCommand(numberOfCowboys, randomSeed, optionValues);
+        return createSingleGameCommand(numberOfCowboys, optionValues);
     }
 
     private static Map<CliOption, String> collectOptionValues(String[] commandLineArguments) {
@@ -48,19 +46,21 @@ public final class CliParser {
         return optionValues;
     }
 
-    private static SingleGameCommand createSingleGameCommand(int numberOfCowboys, OptionalLong randomSeed, Map<CliOption, String> optionValues) {
+    private static SingleGameCommand createSingleGameCommand(int numberOfCowboys, Map<CliOption, String> optionValues) {
         rejectOptionOutsideBatchMode(optionValues, CliOption.STARTER);
         rejectOptionOutsideBatchMode(optionValues, CliOption.SUMMARY);
+        final OptionalLong randomSeed = parseOptionalSeed(optionValues.get(CliOption.SEED));
         final Path protocolOutputPath = pathOrDefault(optionValues, CliOption.OUTPUT, DEFAULT_PROTOCOL_PATH);
         return new SingleGameCommand(numberOfCowboys, randomSeed, protocolOutputPath);
     }
 
-    private static BatchSimulationCommand createBatchSimulationCommand(int numberOfCowboys, OptionalLong randomSeed, Map<CliOption, String> optionValues) {
+    private static BatchSimulationCommand createBatchSimulationCommand(int numberOfCowboys, Map<CliOption, String> optionValues) {
         if (optionValues.containsKey(CliOption.OUTPUT)) {
             throw new IllegalArgumentException("--output cannot be used with --batch; use --summary");
         }
         final int simulationCount = parsePositiveInt(optionValues.get(CliOption.BATCH), "Batch size");
-        final OptionalInt fixedStarter = parseOptionalInt(optionValues.get(CliOption.STARTER), "Starter");
+        final OptionalInt fixedStarter = parseOptionalStarter(optionValues.get(CliOption.STARTER));
+        final OptionalLong randomSeed = parseOptionalSeed(optionValues.get(CliOption.SEED));
         final Path summaryOutputPath = pathOrDefault(optionValues, CliOption.SUMMARY, DEFAULT_SUMMARY_PATH);
         final BatchSimulationPlan plan = new BatchSimulationPlan(numberOfCowboys, simulationCount, randomSeed, fixedStarter);
         return new BatchSimulationCommand(plan, summaryOutputPath);
@@ -84,12 +84,12 @@ public final class CliParser {
         return parsedValue;
     }
 
-    private static OptionalInt parseOptionalInt(String value, String label) {
-        return value == null ? OptionalInt.empty() : OptionalInt.of(parseInt(value, label));
+    private static OptionalInt parseOptionalStarter(String value) {
+        return value == null ? OptionalInt.empty() : OptionalInt.of(parseInt(value, "Starter"));
     }
 
-    private static OptionalLong parseOptionalLong(String value, String label) {
-        return value == null ? OptionalLong.empty() : OptionalLong.of(parseLong(value, label));
+    private static OptionalLong parseOptionalSeed(String value) {
+        return value == null ? OptionalLong.empty() : OptionalLong.of(parseLong(value, "Seed"));
     }
 
     private static int parseInt(String value, String label) {

@@ -61,7 +61,7 @@ public final class ShootoutGame {
     /** A null history deliberately prevents ShotEvent allocation in batch mode. */
     private int runShootout(ShootoutState shootoutState, StatisticsCollector statisticsCollector, List<ShotEvent> shotHistoryOrNull) {
         int shotNumber = 0;
-        while (!shootoutState.isComplete()) {
+        while (shootoutState.hasMultipleCowboysRemaining()) {
             playNextShot(shootoutState, statisticsCollector, shotHistoryOrNull, ++shotNumber);
         }
         return shotNumber;

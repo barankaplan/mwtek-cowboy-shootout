@@ -43,8 +43,8 @@ final class ShootoutState {
         return remainingCowboyCount;
     }
 
-    boolean isComplete() {
-        return remainingCowboyCount == 1;
+    boolean hasMultipleCowboysRemaining() {
+        return remainingCowboyCount > 1;
     }
 
     boolean isCowboyAlive(int cowboyId) {
@@ -90,7 +90,7 @@ final class ShootoutState {
     }
 
     Winner getWinner() {
-        if (!isComplete()) {
+        if (hasMultipleCowboysRemaining()) {
             throw new IllegalStateException("The shootout is not complete");
         }
         final Cowboy winner = requireLivingCowboy(currentCowboyId);
